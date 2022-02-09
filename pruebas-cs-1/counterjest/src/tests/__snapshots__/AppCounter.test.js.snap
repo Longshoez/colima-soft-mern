@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Testeando el counter en el componente App should first show the counter app and its default value 1`] = `
+<div
+  className="App"
+>
+  <header
+    className="App-header"
+  >
+    <button
+      onClick={[Function]}
+      type="button"
+    >
+      +1
+    </button>
+    <h6
+      onClick={[Function]}
+    >
+      10
+    </h6>
+    <button
+      onClick={[Function]}
+      type="button"
+    >
+      -1
+    </button>
+  </header>
+</div>
+`;

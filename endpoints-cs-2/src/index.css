@@ -1,0 +1,79 @@
+*{
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+body{
+  padding: 0;
+  margin: 0;
+  width: 100vw;
+}
+
+input{
+  font-size: 15px;
+  padding: .25rem;
+  padding-left: 0.5rem;
+  padding-right: 0;
+  border: none;
+  color: white;
+}
+
+.header{
+  background:#4c22e2;
+  color: white;
+  padding: 2rem;
+  margin: 0;
+}
+
+.gifSearchContainer{
+  display: flex; 
+  padding: 0;
+  flex-direction: column;
+}
+
+.searchbar{
+  padding: 0;
+  background:#4c22e2;
+  display: flex;
+  justify-content: center;
+}
+.searchbar>input{
+  background-color: transparent;
+  width: 85vw;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  /* border-bottom: 1px solid white; */
+  border: 1px solid white;
+  border-radius: 10px;
+}
+
+.searchbar>input::placeholder{
+ color: white;
+}
+
+.searchText{
+  padding-left: 2rem;
+}
+
+.gifComponent{
+  width: 90vw;
+  height: 90vw;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.gifImage{
+  height: 100%;
+  width: auto;
+}
+
+.gifTitle{
+  position: absolute;
+  justify-self: left;
+  width: inherit;
+  color: white;
+  padding-left: 2rem;
+  font-size: 5vw;
+  z-index: 2;
+}
