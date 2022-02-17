@@ -1,5 +1,13 @@
 # **Typescript tips n tricks**
 
+## to install typescript compiler
+```
+npm install typescript --save-dev
+
+npm install -g typescript
+```
+
+
 ## to compile a typescript file
 ```
 tsc YourFile.ts
@@ -31,3 +39,32 @@ Compile typescript file to a previous version of javascript using the **--target
 ```
 tsc --target ES2016
 ```
+
+## Typed variables
+
+whenever you declare a variable in typescript you must define the type of data you are working like so
+
+```
+let anInteger:int
+let aString:string
+let aBoolean:boolean
+```
+
+## Typed functions
+Just like variables functions should also be declared with a type, similar to other programming languages like java, you would define wether your function returns a value of x type or if it returns nothing (Void), in practice it would look something like this
+
+```
+let aTypescriptFunction():void{
+
+}
+
+```
+
+The parameters inside a function must also have a type
+
+```
+let aTypescriptFunction(a:number, b:number):number{
+  return a + b
+}
+```
+as you can see, since we are returning the sum of **a** and **b** we specify the return type of the function as a number.

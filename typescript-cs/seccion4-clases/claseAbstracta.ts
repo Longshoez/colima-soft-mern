@@ -26,3 +26,4 @@ class ClaseHijo extends SuperClass{
   }
 
 }
+
