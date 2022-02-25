@@ -45,7 +45,7 @@ const TodoApp = () => {
             payload: todoId
         })
     }
-
+        
     const handleAddTodo = (newTodo) => {
         dispatch({
                 type: 'add',
