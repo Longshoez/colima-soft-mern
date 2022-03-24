@@ -1,41 +1,24 @@
-//here we can write server side code
-//api/new-blog
+import conectarDB from "../../lib/dbConnect";
+import BlogSchema from "../../models/BlogSchema";
 
-import { MongoClient } from 'mongodb'
+export default async function handler(req, res){
 
-async function handler(req, res){
+  await conectarDB()
 
-  if (req.method !== 'POST') return;
-  const { image, title, description, details } = req.body
-  const slug = title.toLowerCase()
+  //POST
+  const {method} = req
 
-  if (!image || !title || !description || !details) return;
-
-  const client = await MongoClient.connect(
-    "mongodb+srv://GabrielDB:0EaOxJLhinO2aBtj@cluster0.nommx.mongodb.net/next-js-crashcourse?retryWrites=true&w=majority"
-  );
-
-  const db = client.db();
-
-  const postCollection = db.collection('posts')
-
-  const result = await postCollection.insertOne({image, title, description, details, slug})
-
-  client.close()
-
-  res.status(201).json({
-    post: result, 
-    message: 'Post Created'
-  })
+  switch (method) {
+    case 'POST':
+      try {
+        const blog_post = new Blog(req.body)
+        await blog_post.save()
+        return res.status(200).json({success: true, blog_post})
+      } catch (e) {
+        return res.status(400).json({success: false, error: 'server error :O'})
+      }
+    default:
+      return res.status(500).json({success: false, error: 'server error :O'})
+  }
 
 }
-
-export default handler
-
-
-//"mongodb+srv://GabrielDB:xrfgv0yLBUFFOMTFs@cluster0.nommx.mongodb.net/nextJsTutorial?retryWrites=true&w=majority"
-
-//0EaOxJLhinO2aBtj
-
-//test image 
-//https://images.unsplash.com/photo-1645790314935-ec2fe8b2a238?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1424&q=80
