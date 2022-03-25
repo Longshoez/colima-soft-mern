@@ -1,0 +1,80 @@
+body {
+  margin: 0;
+  padding: 2rem;
+  padding-top: 0;
+  padding-bottom: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  flex-direction: column;    
+  align-items: center;
+  height: 100vh;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.nav{      
+  display: flex;  
+  width: 50rem;
+  margin-top: auto;
+  flex-grow: 1;
+  border: 1px solid black;
+  padding: 1rem;
+  margin-top: 2rem;
+}
+
+.nav> div:first-child{  
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.nav> div > *{  
+  padding: .8rem;    
+  border: none;  
+  width: 90%;  
+}
+
+.nav> div > *:first-child{  
+  padding: .8rem;        
+  border-bottom: 1px solid #000;
+}
+
+button{
+  align-self: center;
+  margin-left: auto;
+  width: 100px;
+  height: 50px;
+  border: none;  
+  font-weight: 500;  
+}
+
+.taskContainer{
+  display: flex;  
+  border: 1px solid black;
+  padding: 1rem;
+}
+
+.taskContainer > div{
+  width: 100%;
+}
+
+.taskContainer > div > p:first-child{  
+  width: fit-content;
+  font-weight: bold;
+}
+
+.taskContainer > div > p:nth-child(2){  
+  width: fit-content;
+}
+
+.App > .taskContainer:nth-child(odd){  
+  border-bottom: none !important;  
+  border-top: none;  
+}
