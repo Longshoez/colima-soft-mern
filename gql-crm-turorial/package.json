@@ -12,7 +12,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "apollo-server": "^3.6.6"
+    "apollo-server": "^3.6.6",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.2.8"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
