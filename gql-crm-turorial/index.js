@@ -2,6 +2,7 @@ const { ApolloServer, gql } = require('apollo-server')
 const typeDefs = require('./db/schema')
 const resolvers = require('./db/resolvers')
 const connectarDB = require('./config/db')
+const jwt = require('jsonwebtoken')
 
 //conectar a la db
 connectarDB()
@@ -10,9 +11,23 @@ connectarDB()
 const server = new ApolloServer({
   typeDefs, 
   resolvers,
-  context: () => {
-    const mensaje = "Soy el mensaje que se trigerea cada que se ejecuta la query"
-    return {mensaje}
+  context: ({req}) => { //this is sorta redux without redux, it makes some data available on all the resolvers
+    //console.log(req.headers['authorization'])
+    const token = req.headers['authorization'] || ''
+    if (token) {
+      try {
+        const usuario = jwt.verify(token, process.env.SECRET_WORD)
+        //console.log('ctx ',usuario)
+
+        //we return this so we can access it on the resolvers
+        return{
+          usuario
+        }
+      } catch (err) {
+        console.log('Something went wrong')
+        console.log(err)        
+      }
+    }
   }
 })
 
