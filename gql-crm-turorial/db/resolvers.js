@@ -5,13 +5,13 @@ const Pedido = require('../models/Pedidos')
 
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-require('dotenv').config({path: '.env'})
+require('dotenv').config({ path: '.env' })
 
 //crear token
 const crearToken = (usuario, secreta, expiresIn) => {
   console.log(usuario)
-  const {id, email, nombre, apellido} = usuario
-  return jwt.sign({id, email, nombre, apellido}, secreta, {expiresIn})
+  const { id, email, nombre, apellido } = usuario
+  return jwt.sign({ id, email, nombre, apellido }, secreta, { expiresIn })
 
 }
 
@@ -24,11 +24,11 @@ const crearToken = (usuario, secreta, expiresIn) => {
 const resolvers = {
 
   Query: {
-    obtenerUsuario: async (_, {token}) => {
+    obtenerUsuario: async (_, { token }) => {
       const usuarioId = await jwt.verify(token, process.env.SECRET_WORD)
       return usuarioId
-    },  
-    
+    },
+
     obtenerProductos: async () => {
       try {
         const productos = await Producto.find({})
@@ -38,7 +38,7 @@ const resolvers = {
       }
     },
 
-    obtenerProducto: async (_, {id}) => {
+    obtenerProducto: async (_, { id }) => {
       //revisar si existe el producto
       const producto = await Producto.findById(id)
 
@@ -52,7 +52,7 @@ const resolvers = {
 
     obtenerClientes: async () => {
       try {
-                              //documento
+        //documento
         const clientes = await Cliente.find({}) //objeto vacio se trae todas las ocurrencias por default
         return clientes
       } catch (error) {
@@ -60,20 +60,20 @@ const resolvers = {
       }
     },
 
-    obtenerClientesVendedor: async (_, {}, ctx) => {
+    obtenerClientesVendedor: async (_, { }, ctx) => {
       try {
-                              //documento
-        const clientes = await Cliente.find({vendedor: ctx.usuario.id.toString()}) //objeto vacio se trae todas las ocurrencias por default
+        //documento
+        const clientes = await Cliente.find({ vendedor: ctx.usuario.id.toString() }) //objeto vacio se trae todas las ocurrencias por default
         return clientes
       } catch (error) {
         console.log(error)
       }
     },
     //requerimos el ctx (context) ahi porque nos dara acceso al usuario que esta autenticado
-    obtenerCliente: async (_, {id}, ctx) => {
+    obtenerCliente: async (_, { id }, ctx) => {
       //Check if exists
       const cliente = await Cliente.findById(id)
-      
+
       if (!cliente) {
         throw new Error('Cliente no encontrado')
       }
@@ -87,22 +87,22 @@ const resolvers = {
     },
     obtenerPedidos: async () => {
       try {
-        const pedidos = await Pedido.find ({})
+        const pedidos = await Pedido.find({})
         return pedidos
       } catch (error) {
         console.log(error)
       }
     },
-    obtenerPedidosVendedor: async (_, {}, ctx) => {
+    obtenerPedidosVendedor: async (_, { }, ctx) => {
       try {
-        const pedidos = await Pedido.find({vendedor: ctx.usuario.id})
+        const pedidos = await Pedido.find({ vendedor: ctx.usuario.id })
         return pedidos
       } catch (error) {
         console.log(error)
       }
     },
-    obtenerPedido: async (_, {id}, ctx) => {
-      
+    obtenerPedido: async (_, { id }, ctx) => {
+
       //pedido existe
       const pedido = await Pedido.findById(id)
       if (!pedido) {
@@ -116,67 +116,72 @@ const resolvers = {
       //retornar pedido
       return pedido
     },
-    obtenerPedidosEstado: async (_, {estado}, ctx) => {                    //al ser estos dos iguales se podria dejar escrito solo "estado", una sola vez, pero para ser explicitos a la hora de leer este codigo en el futuro lo dejare de esta forma
-      const pedidos = await Pedido.find({vendedor: ctx.usuario.id, estado:estado})
+    obtenerPedidosEstado: async (_, { estado }, ctx) => {                    //al ser estos dos iguales se podria dejar escrito solo "estado", una sola vez, pero para ser explicitos a la hora de leer este codigo en el futuro lo dejare de esta forma
+      const pedidos = await Pedido.find({ vendedor: ctx.usuario.id, estado: estado })
       return pedidos
     },
     mejoresClientes: async () => {
-      //las funciones tipo aggregate toman diferentes valores y los agrupan en un solo resultado, como un join en sql
       const clientes = await Pedido.aggregate([
-        { $match: {estado: "COMPLETADO"}}, //$match es como un WHERE en sql
-        { $group: {
-          _id: "$cliente", //nombre del modelo (se requiere que este en minusculas)
-          total: {$sum: 'total'} //crea un campo total y hace una suma ($sum)
-        }},
-        {
-          $lookup:{
-            from: 'cliente',
-            localField: '_id',
-            foreignField: "_id",
-            as: "cliente"
-          }
-        },
-        {
-          $sort: {total: -1}
-        }
+        //verificar que se hayan completado los pedidos
+        { $match: { estado: 'COMPLETADO' } },
       ])
-      console.log(clientes)
+      console.log(clientes) // this returns a
       return clientes
     },
-    
+    // mejoresClientes: async () => {
+    //   
+    //   const clientes = await Pedido.aggregate([
+    //     {$match: {estado: "COMPLETADO"}}, 
+    //     { $group: {
+    //       _id: "$cliente", 
+    //       total: {$sum: '$total'}, //crea un campo total y hace una suma ($sum)
+    //     }},
+    //   ])
+    //   console.log(clientes)
+    //   return clientes
+    // },
+
     mejoresVendedores: async () => {
+      //las funciones tipo aggregate toman diferentes valores y los agrupan en un solo resultado, como un join en sql
       const vendedores = await Pedido.aggregate([
-        {$match: {estado: "COMPLETADO"}},
-        {$group: {
-          _id: "$vendedor",
-          total: {$sum:'$total'}
-        }},
-        {$lookup: {
-          from: 'usuarios',
-          localField: '_id',
-          foreignField: '_id',
-          as: 'vendedor'
-        }},
+        //{ $match: { estado: "COMPLETADO" } }, //$match es como un WHERE en sql
+        { $match: {} }, //$match es como un WHERE en sql
         {
-          $limit: 10
+          $group: {
+            _id: "$vendedor", //nombre del modelo (se requiere que este en minusculas)
+            total: { $sum: '$total' },//crea un campo total y hace una suma ($sum)
+          }
         },
-        {$sort: {total: -1}}
-      ])
-      console.log(vendedores)
-      return vendedores
+        // {
+        //   $lookup: {
+        //     from: 'usuarios',
+        //     localField: '_id',
+        //     foreignField: '_id',
+        //     as: 'vendedor'
+        //   }
+        // },
+        // {
+        //   $sort: { total: -1 }
+        // },
+        // {
+        //   $limit: 1
+        // },
+      ]);
+      console.log(vendedores);
+      return vendedores;
     }
   },
 
   Mutation: {
 
-    nuevoUsuario: async(_, {input}) => {
-      const {email, password} = input
+    nuevoUsuario: async (_, { input }) => {
+      const { email, password } = input
 
       //Check if user already exists      
-      const existeUsuario = await Usuario.findOne({email})
+      const existeUsuario = await Usuario.findOne({ email })
       if (existeUsuario) {
-        throw new Error('Usuario ya existe') 
-      }      
+        throw new Error('Usuario ya existe')
+      }
       //Hash the password
       const salt = await bcrypt.genSalt(10)
       input.password = await bcrypt.hash(password, salt)
@@ -185,17 +190,17 @@ const resolvers = {
         const usuario = new Usuario(input)
         usuario.save()
         return usuario
-        
+
       } catch (error) {
         console.log(error)
       }
     },
 
-    autenticarUsuario: async (_, {input}) => {
+    autenticarUsuario: async (_, { input }) => {
 
-      const {email, password} = input      
+      const { email, password } = input
       //usuario existe?      
-      const existeUsuario = await Usuario.findOne({email})
+      const existeUsuario = await Usuario.findOne({ email })
       if (!existeUsuario) {
         throw new Error('El usuario no existe')
       }
@@ -203,7 +208,7 @@ const resolvers = {
       const passwordCorreto = await bcrypt.compare(password, existeUsuario.password)
       if (!passwordCorreto) {
         throw new Error('la pass es incorrecta')
-      }      
+      }
       //Crear el token
       return {
         token: crearToken(existeUsuario, process.env.SECRET_WORD, '12h')
@@ -211,7 +216,7 @@ const resolvers = {
 
     },
 
-    nuevoProducto: async(_, {input}) => {
+    nuevoProducto: async (_, { input }) => {
       try {
         const nuevoProducto = new Producto(input)
         //Store into db
@@ -222,7 +227,7 @@ const resolvers = {
       }
     },
 
-    actualizarProducto: async(_, {id, input}) => {
+    actualizarProducto: async (_, { id, input }) => {
       //check if product exists
       let producto = await Producto.findById(id) //let so we can modify its values
 
@@ -231,11 +236,11 @@ const resolvers = {
       }
 
       //guardar en la db
-      producto = await Producto.findOneAndUpdate({_id: id}, input, {new:true}) //sin el true, la funcion retornaria el objeto anterior, con esa ultima opcion, regresa el producto modificado
+      producto = await Producto.findOneAndUpdate({ _id: id }, input, { new: true }) //sin el true, la funcion retornaria el objeto anterior, con esa ultima opcion, regresa el producto modificado
       return producto
     },
 
-    eliminarProducto: async(_, {id}) => {
+    eliminarProducto: async (_, { id }) => {
       //check if product exists
       let producto = await Producto.findById(id) //let so we can modify its values
 
@@ -244,20 +249,20 @@ const resolvers = {
       }
 
       //Eliminar                            //primero el {campo_del_documento: y_luego_la_variable}
-      await Producto.findOneAndDelete({_id: id}) //el tutor recomienda usar delete sobre remove, menciona que es mas recomendado
+      await Producto.findOneAndDelete({ _id: id }) //el tutor recomienda usar delete sobre remove, menciona que es mas recomendado
       //definir la string que se va retornar (el return que se especifico en el schema)
       return "Producto eliminado"
     },
 
-    nuevoCliente: async(_, {input}, ctx) => {
+    nuevoCliente: async (_, { input }, ctx) => {
 
       console.log(ctx)
 
-      const {email} = input //destructuring input to get only the email
+      const { email } = input //destructuring input to get only the email
 
       //validar si el cliente ya existe
       //console.log(input)
-      const cliente = await Cliente.findOne({email})
+      const cliente = await Cliente.findOne({ email })
       if (cliente) {
         throw new Error('El cliente ya ha sido registrado')
       }
@@ -276,9 +281,9 @@ const resolvers = {
       }
     },
 
-    actualizarCliente: async(_, {id, input}, ctx) => {
+    actualizarCliente: async (_, { id, input }, ctx) => {
       let cliente = await Cliente.findById(id) //let porque despues de traernos el cliente necesitamos poder modificar sus datos
-      
+
       //validar que exista el cliente
       if (!cliente) {
         throw new Error('no se encontro ningun cliente con ese id')
@@ -290,13 +295,13 @@ const resolvers = {
       }
 
       //guardar       Documento.funcionDeMongo      id a buscar,    datos nuevos,    return updated clietn
-      cliente = await Cliente.findOneAndUpdate({_id: id}, input, {new:true})
+      cliente = await Cliente.findOneAndUpdate({ _id: id }, input, { new: true })
       return cliente
     },
 
-    eliminarCliente: async(_, {id}, ctx) => {
+    eliminarCliente: async (_, { id }, ctx) => {
       let cliente = await Cliente.findById(id) //let porque despues de traernos el cliente necesitamos poder modificar sus datos
-      
+
       //validar que exista el cliente
       if (!cliente) {
         throw new Error('no se encontro ningun cliente con ese id')
@@ -308,13 +313,13 @@ const resolvers = {
       }
 
       //guardar       Documento.funcionDeMongo      id a buscar,    datos nuevos,    return updated clietn
-      cliente = await Cliente.findOneAndDelete({_id: id})
+      cliente = await Cliente.findOneAndDelete({ _id: id })
       return 'Cliente eliminado'
     },
 
-    nuevoPedido: async(_, {input}, ctx) => {
-      
-      const {cliente} = input
+    nuevoPedido: async (_, { input }, ctx) => {
+
+      const { cliente } = input
 
       //validar si el cliente existe
       let clienteExists = await Cliente.findById(cliente)
@@ -345,15 +350,15 @@ const resolvers = {
       console.log('despues del error')*/}
 
       //usamos for await (operador asincrono)
-      for await(const articulo of input.pedido){
-        const {id} = articulo
+      for await (const articulo of input.pedido) {
+        const { id } = articulo
         const producto = await Producto.findById(id)
-        
+
         console.log(producto)
 
         if (articulo.cantidad > producto.existencia) {
           throw new Error(`El articulo ${producto.nombre} excede la cantidad en stock`)
-        }else{
+        } else {
           //restar cantidad comprada en el producto
           producto.existencia = producto.existencia - articulo.cantidad
           await producto.save() //guarda los cambios en la bd
@@ -370,12 +375,12 @@ const resolvers = {
       //guardar en db
       const res = await nuevoPedido.save()
       return res
-    }, 
+    },
 
-    actualizarPedido: async(_, {id, input}, ctx) => {
+    actualizarPedido: async (_, { id, input }, ctx) => {
 
       //extraer datos del input 
-      const {cliente} = input
+      const { cliente } = input
 
       //validar si el pedido existe
       const existePedido = await Pedido.findById(id)
@@ -395,13 +400,13 @@ const resolvers = {
 
       //revisar stock -> el if es para verificar si se requiere modificar el pedido, en caso de que no, y solo se quiera modificar la orden, entonces no etra al ciclo for y permite modificar solo la orden, de lo contrario al no pasarle un input, arrojaria error puesto a que estaria iterando en algo que no existe
       if (input.pedido) {
-        for await (const articulo of input.pedido){
-          const {id} = articulo
+        for await (const articulo of input.pedido) {
+          const { id } = articulo
           const producto = await Producto.findById(id)
-  
+
           if (articulo.cantidad > producto.existencia) {
             throw new Error(`El articulo ${producto.nombre} excede la cantidad disponible`)
-          }else{
+          } else {
             //guardar el pedido
             producto.existencia = producto.existencia - articulo.cantidad
             await producto.save()
@@ -409,13 +414,13 @@ const resolvers = {
         }
       }
 
-      const res = await Pedido.findOneAndUpdate({_id: id}, input, {new: true})
+      const res = await Pedido.findOneAndUpdate({ _id: id }, input, { new: true })
       return res
-      
+
     },
 
-    eliminarPedido: async(_, {id}, ctx) => {
-      
+    eliminarPedido: async (_, { id }, ctx) => {
+
       //pedido existe
       const pedido = await Pedido.findById(id)
       if (!pedido) {
@@ -428,7 +433,7 @@ const resolvers = {
       }
 
       //eliminar de la bd
-      await Pedido.findOneAndDelete({_id: id})
+      await Pedido.findOneAndDelete({ _id: id })
       return "Pedido eliminado"
     }
 

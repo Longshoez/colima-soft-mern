@@ -1,5 +1,5 @@
 
- const { gql } = require('apollo-server')
+const { gql } = require('apollo-server')
 
 //Siempre que creamos una funcion o mutation hay que crear su respectivo resolver
 
@@ -9,7 +9,6 @@ const typeDefs = gql`
   #Types
 
   type Usuario{
-    _ud: ID
     id: ID
     nombre: String
     apellido: String
