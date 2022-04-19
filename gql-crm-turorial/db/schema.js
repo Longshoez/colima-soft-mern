@@ -114,7 +114,10 @@ const typeDefs = gql`
 
   type Query{
     #Usuarios
-    obtenerUsuario(token: String!): Usuario
+    #old function
+    #obtenerUsuario(token: String!): Usuario
+    #new function
+    obtenerUsuario: Usuario
 
     #Productos
     obtenerProductos: [Producto] # READ -> 
@@ -134,6 +137,7 @@ const typeDefs = gql`
     #Busquedas avanzadas
     mejoresClientes:[TopCliente]
     mejoresVendedores:[TopVendedor]
+    buscarProducto(texto: String!) : [Producto] #"texto" es la variable que va recibir
 
   }
 

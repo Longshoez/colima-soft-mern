@@ -13,12 +13,14 @@ const server = new ApolloServer({
   resolvers,
   context: ({req}) => { //this is sorta redux without redux, it makes some data available on all the resolvers
     //console.log(req.headers['authorization'])
+
+    console.log(req.headers)
     const token = req.headers['authorization'] || ''
     if (token) {
       try {
-        const usuario = jwt.verify(token, process.env.SECRET_WORD)
+        const usuario = jwt.verify(token.replace('Bearer ', ''), process.env.SECRET_WORD)
         //console.log('ctx ',usuario)
-
+	console.log(usuario)
         //we return this so we can access it on the resolvers
         return{
           usuario

@@ -24,9 +24,15 @@ const crearToken = (usuario, secreta, expiresIn) => {
 const resolvers = {
 
   Query: {
-    obtenerUsuario: async (_, { token }) => {
-      const usuarioId = await jwt.verify(token, process.env.SECRET_WORD)
-      return usuarioId
+    //como en el frontend tenemos el token en el context, ya no requerimos pasarle el token manualmente e incluso podemos dejar esta funcion mas sencilla.
+    //de igual forma debemos modificar el schema para que acepte los nuevos cambios
+    //obtenerUsuario: async (_, {token}) => {
+    //   const usuarioId = await jwt.verify(token, process.env.SECRET_WORD)
+    //   return usuarioId
+    //},
+    
+    obtenerUsuario: async (_, {}, ctx) => {
+      return ctx.usuario
     },
 
     obtenerProductos: async () => {
@@ -169,6 +175,10 @@ const resolvers = {
       ]);
       console.log(vendedores);
       return vendedores;
+    },
+    buscarProducto: async (_, { texto }) => {
+      const productos = await Producto.find({ $text: { $search: texto } }).limit(20)
+      return productos
     }
   },
 
