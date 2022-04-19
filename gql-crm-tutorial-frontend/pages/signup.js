@@ -3,6 +3,7 @@ import * as Yup from 'yup' //validaciones
 import { useState } from 'react'
 import Layout from '../components/Layout'
 import { useQuery, useMutation, gql } from '@apollo/client'
+import { useRouter } from 'next/router'
 
 const NUEVA_CUENTA = gql`
   mutation nuevoUsuario($input: UsuarioInput) {
@@ -26,6 +27,8 @@ const signup = () => {
 
   //crear nuevos usuarios
   const [nuevoUsuario] = useMutation(NUEVA_CUENTA) //cuando usamos mutations en lugar de usar corchetes, usamos llaves, y aplicamos array destructuring y retorna la funcion del mutation
+
+  const router = useRouter()
 
   const formik = useFormik({
     initialValues: {
@@ -58,6 +61,10 @@ const signup = () => {
         })
         //usuario creado correctamente
         console.log(data)
+        setMensaje(`Usuario ${data.nuevoUsuario.nombre} creado con exito`)
+        setTimeout(() => {
+          router.push('/login')
+        }, 2000);
       } catch (err) {
         console.log(err.message)
         setMensaje(err.message)
@@ -76,7 +83,7 @@ const signup = () => {
         <div className='w-full max-w-sm'>
           <form onSubmit={formik.handleSubmit} className='bg-white rounded shadow-md5 px-8 pt-4 pb-4 mb-4'>
 
-            {mensaje !== null ? <div className='my-1 bg-red-100 border-l-4 border-red-500 text-red-700 p-2'><p>{mensaje}</p></div> : null}
+            {mensaje !== null ? <div className='my-1 bg-red-100 border-l-4 border-green-500 text-red-700 p-2'><p>{mensaje}</p></div> : null}
 
             {formik.touched.email && formik.errors.email ? <div className='my-1 bg-red-100 border-l-4 border-red-500 text-red-700 p-2'><p>{formik.errors.email}</p></div> : null}
             <div className='mb-4 mt-4'>
