@@ -89,8 +89,13 @@ const signup = () => {
             <div className='mb-4 mt-4'>
               <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor="email">Email</label>
               <input className="shadow apperance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none"
-                id="email" type="email" placeholder="Email" value={formik.values.email} onChange={formik.handleChange}
-                onBlur={formik.handleBlur} />
+                id="email"
+                type="email"
+                placeholder="Email"
+                value={formik.values.email}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
             </div>
 
             {formik.touched.nombre && formik.errors.nombre ? <div className='my-1 bg-red-100 border-l-4 border-red-500 text-red-700 p-2'><p>{formik.errors.nombre}</p></div> : null}
