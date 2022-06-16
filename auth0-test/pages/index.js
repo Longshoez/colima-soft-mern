@@ -21,6 +21,7 @@ export default function Home() {
     ) : (
       <div>
         <h1>login</h1>
+        <a href="/api/auth/login">Login</a>
       </div>
     )
   )
