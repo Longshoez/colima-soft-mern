@@ -6,7 +6,7 @@ require('dotenv').config
 const typeDefs = require('./typeDefs')
 const resolvers = require('./resolvers')
 
-const URL='mongodb+srv://tetst1:6LGJ9AyeTrnNpLxu@cluster0.nommx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+const URL='mongodb+srv://tetst1:T3kgbLOUTvGIPofW@cluster0.nommx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 
 mongoose.connect(URL, {
   useUnifiedTopology: true,

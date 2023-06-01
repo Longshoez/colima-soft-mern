@@ -1,12 +1,12 @@
 const mongoose = require('mongoose')
-require('dotenv').config({path: '.env'})
+require('dotenv').config({path: './env'})
 
 const connectarDB = async () => {
   try {
     await mongoose.connect(process.env.DB_MONGO,{
       //this things prevent some random warnings (not showing up on my end, but the tutorial guy suggested it)
-      useNewUrlParser: true,
       useUnifiedTopology: true,      
+      useNewUrlParser: true,
     })
     console.log('Connection to db succesful')
   } catch (error) {
