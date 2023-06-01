@@ -34,7 +34,7 @@
     }
 
     .login-box {
-      width: 46rem;
+      width: 42rem;
       border-radius: 2.5rem;
       background-color: white;
       padding: 4rem;
@@ -167,6 +167,15 @@
   }
 */
 
+    .button-group:nth-last-of-type(2) {
+      display: flex;
+      flex-direction: row;
+      flex-grow: 1;
+      width: 100%;
+      justify-content: center;
+    }
+
+
     button:active {
       filter: drop-shadow(0px 0px 0px rgba(0, 0, 0, 0.11));
       opacity: .85 !important;
@@ -174,9 +183,9 @@
     }
 
     .social>button {
-      width: 60% !important;
+      width: 15% !important;
       display: flex;
-      padding: 1.5rem !important;
+      padding: 2rem !important;
       margin: 0;
       padding: 0 !important;
       background-color: white !important;
@@ -193,8 +202,13 @@
     }
 
     .social>button:first-of-type {
-      margin-top: 1rem !important;
-      margin-bottom: 1rem !important;
+      margin: .5rem !important;
+      width: 6rem !important;
+      height: 6rem !important;
+    }
+
+    .github {
+      color: black !important
     }
 
     /*
@@ -205,14 +219,15 @@
 
     .social>button:hover {
       color: grey !important;
+      filter: drop-shadow(0px 0px 1px rgba(0, 0, 0, 0.11));
     }
 
     /* icon */
     .social>button>i {
       padding: 0;
-      padding-right: 1rem;
       margin-bottom: auto !important;
       margin-top: auto !important;
+      padding: 2rem;
     }
 
     .google {
@@ -303,6 +318,22 @@
       left: -2%;
       bottom: -5%;
     }
+
+    @media only screen and (max-width: 1370px) {
+      .login-box {
+        width: 40rem;
+      }
+
+      h2 {
+        margin-top: 4rem !important;
+        margin-bottom: 3rem !important;
+      }
+
+      .social>button>i {
+        font-size: 1.8rem;
+      }
+
+    }
   </style>
 
 </head>
@@ -341,22 +372,47 @@
 
 
         <div class="or">
-          <span>or</span>
+          <span id='or'>Or sign in with</span>
           <hr>
         </div>
 
-        <div class="button-group social">
-          <button type="button" id="btn-google" class="btn btn-default btn-danger btn-block">
-            <i class="fa-brands fa-google google"></i>
-            <p id="btnTagGoogle">Continue with Google</p>
-          </button>
-        </div>
+        <div class="button-group">
+          <div class=" social">
+            <button type="button" id="btn-google" class="btn btn-default btn-danger btn-block">
+              <i class="fa-brands fa-google google"></i>
+            </button>
+          </div>
 
-        <div class="button-group social">
-          <button type="button" id="btn-linkedin" class="btn btn-default btn-danger btn-block linkedin">
-            <i class="fa-brands fa-linkedin"></i>
-            <p id="btnTagLinkedin">Continue with Linkedin</p>
-          </button>
+          <div class="social">
+            <button type="button" id="btn-linkedin" class="btn btn-default btn-danger btn-block linkedin">
+              <i class="fa-brands fa-linkedin"></i>
+            </button>
+          </div>
+
+          <!-- <div class="social">
+            <button type="button" id="btn-linkedin" class="btn btn-default btn-danger btn-block linkedin">
+              <i class="fa-brands fa-facebook-f"></i>
+            </button>
+          </div> -->
+
+          <div class="social">
+            <button type="button" id="btn-github" class="btn btn-default btn-danger btn-block github">
+              <i class="fa-brands fa-github"></i>
+            </button>
+          </div>
+
+          <!-- <div class="social">
+            <button type="button" id="btn-linkedin" class="btn btn-default btn-danger btn-block linkedin">
+              <i class="fa-brands fa-microsoft"></i>
+            </button>
+          </div> -->
+
+          <!-- <div class="social">
+            <button type="button" id="btn-apple" class="btn btn-default btn-danger btn-block apple">
+              <i class="fa-brands fa-apple"></i>
+            </button>
+          </div> -->
+
         </div>
 
         <div class="bottomText">
@@ -446,16 +502,28 @@
         });
       }
 
-      function loginWithGoogle() {
+      function loginWithGithub() {
         webAuth.authorize({
-          connection: 'google-oauth2'
+          connection: 'github'
         }, function (err) {
           if (err) displayError(err);
         });
       }
 
       function loginWithLinkedin() {
-        window.location.href = linkedinUrl;
+        webAuth.authorize({
+          connection: 'linkedin'
+        }, function (err) {
+          if (err) displayError(err);
+        });
+      }
+
+      function loginWithGoogle() {
+        webAuth.authorize({
+          connection: 'google-oauth2'
+        }, function (err) {
+          if (err) displayError(err);
+        });
       }
 
       function displayError(err) {
@@ -465,26 +533,24 @@
         errorMessage.style.display = 'block';
       }
 
-
+      let btnLogin = document.getElementById('btn-login')
+      let btnGoogle = document.getElementById('btn-google')
+      let btnGithub = document.getElementById('btn-github')
+      let btnLinkedin = document.getElementById('btn-linkedin')
+      let btnSignup = document.getElementById('btn-signup')
 
       btnLogin.addEventListener('click', login);
       btnGoogle.addEventListener('click', loginWithGoogle);
       btnLinkedin.addEventListener('click', loginWithLinkedin);
+      btnGithub.addEventListener('click', loginWithGithub);
       btnSignup.addEventListener('click', signup);
 
-
-      let btnLogin = document.getElementById('btn-login')
-      let btnGoogle = document.getElementById('btn-google')
-      let btnLinkedin = document.getElementById('btn-linkedin')
-      let btnSignup = document.getElementById('btn-signup')
     });
 
     let btnLogin = document.getElementById('btn-login')
     let btnSignup = document.getElementById('btn-signup')
     let forgotPass = document.getElementById('forgot-password')
 
-    let btnTagGoogle = document.getElementById('btnTagGoogle')
-    let btnTagLinkedin = document.getElementById('btnTagLinkedin')
     let loginContainer = document.getElementById('loginContainer')
 
     let checkbox = document.getElementById('authType');
@@ -502,8 +568,6 @@
 
       if (switcher) {
         head.innerHTML = 'Sign Up'
-        btnTagGoogle.innerText = 'Sign up with Google'
-        btnTagLinkedin.innerText = 'Sign up with Linkedin'
         pTag.innerText = 'Already have an account?'
         loginSwitch.innerText = 'log in here'
         loginContainer.classList.add('fadein')
@@ -512,8 +576,6 @@
         !forgotPass.classList.contains('hide') && forgotPass.classList.add('hide')
       } else {
         head.innerHTML = 'Log in'
-        btnTagGoogle.innerText = 'Continue Google'
-        btnTagLinkedin.innerText = 'Continue with Linkedin'
         pTag.innerText = "Don't have an account?"
         loginSwitch.innerText = 'sign up here'
         loginContainer.classList.add('fadein')
